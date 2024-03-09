@@ -180,3 +180,32 @@ final class RequestManager: RequestManagerProtocol {
   }
 }
 ```
+
+## Authentication token request
+
+```swift
+// 1
+enum AuthTokenRequest: RequestProtocol {
+  case auth
+  // 2
+  var path: String {
+    "/v2/oauth2/token"
+  }
+  // 3
+  var params: [String: Any] {
+    [
+      "grant_type": APIConstants.grantType,
+      "client_id": APIConstants.clientId,
+      "client_secret": APIConstants.clientSecret
+    ]
+  }
+  // 4
+  var addAuthorizationToken: Bool {
+    false
+  }
+  // 5
+  var requestType: RequestType {
+    .POST
+  }
+}
+```
