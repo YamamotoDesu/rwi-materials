@@ -41,3 +41,51 @@ extension Animal {
   static let mock = loadAnimals()
 }
 ```
+
+## async/await
+Apple introduced async/await with iOS 15 in Swift, but with the release of Xcode 13.2, it’s also backward compatible starting with iOS 13. Swift now lets you write asynchronous code without using a completion handler. 
+
+```swift
+guard let url = URL(string: "<--some-url-->") else {
+  return
+}
+
+// 1
+let urlRequest = URLRequest(url: url)
+// 2
+Task {
+  do {
+    // 3
+    let data = try await perform(urlRequest)
+    // do operations on data
+  } catch { // 4
+      print(error.localizedDescription)
+  }
+}
+```
+
+If you were to write something similar with a completion handler, you would get something like this:
+```swift
+func perform(_ request: URLRequest,
+  completionHandler: @escaping (Result<Data, Error>) -> ()) {
+  // 1
+  URLSession.shared.dataTask(with: request) {
+    data, response, error in
+    // 2
+    if let err = error {
+      completionHandler(.failure(err))
+      return
+    }
+    // 3
+    guard let data = data,
+          let response = response as? HTTPURLResponse,
+          response.statusCode == 200 else {
+            return
+          }
+    // 4
+    completionHandler(.success(data))
+  }.resume()
+}
+```
+
+
