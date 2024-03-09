@@ -66,26 +66,19 @@ Task {
 
 If you were to write something similar with a completion handler, you would get something like this:
 ```swift
-func perform(_ request: URLRequest,
-  completionHandler: @escaping (Result<Data, Error>) -> ()) {
-  // 1
-  URLSession.shared.dataTask(with: request) {
-    data, response, error in
-    // 2
-    if let err = error {
-      completionHandler(.failure(err))
-      return
-    }
-    // 3
-    guard let data = data,
-          let response = response as? HTTPURLResponse,
-          response.statusCode == 200 else {
-            return
-          }
-    // 4
-    completionHandler(.success(data))
-  }.resume()
+guard let url = URL(string: "<--some-url-->") else {
+  return
 }
+let urlRequest = URLRequest(url: url)
+perform(_ request: urlRequest) { response in
+  switch response {
+    case .success(let data):
+      // do some operations on data
+    case .failure(let error):
+      print(error.localizedDescription)
+  }
+}
+
 ```
 
 
